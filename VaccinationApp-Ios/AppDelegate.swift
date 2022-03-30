@@ -1,19 +1,35 @@
 //
 //  AppDelegate.swift
-//  VaccinationApp-Ios
+//  VaccinationApp
 //
-//  Created by Manpreet Kaur on 2022-03-30.
+//  Created by 2022M3 on 14/03/22.
 //
 
 import UIKit
+@_exported import Firebase
+@_exported import FirebaseFirestore
+import FirebaseCore
+import FirebaseMessaging
+
+
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
-
+    var db : Firestore!
+    static let shared : AppDelegate = UIApplication.shared.delegate as! AppDelegate
+    
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        
+        FirebaseApp.configure()
+        db = Firestore.firestore()
+        let settings = db.settings
+        db.settings = settings
+        
         return true
     }
 

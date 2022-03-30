@@ -1,8 +1,8 @@
 //
 //  ViewController.swift
-//  VaccinationApp-Ios
+//  VaccinationApp
 //
-//  Created by Manpreet Kaur on 2022-03-30.
+//  Created by 2022M3 on 14/03/22.
 //
 
 import UIKit
