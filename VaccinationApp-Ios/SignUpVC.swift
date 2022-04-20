@@ -16,14 +16,16 @@ class SignUpVC: UIViewController {
     @IBOutlet weak var imgCheck: UIImageView!
     @IBOutlet weak var btnSignUp: UIButton!
     @IBOutlet weak var btnSignIn: UIButton!
+    @IBOutlet weak var btnSignInWithApple: UIButton!
     @IBOutlet weak var txtConfirmPassword: SkyFloatingTextField!
     
     //MARK:- Class Variables
     var flag: Bool = false
-    
+    private let appleLoginManager: AppleLoginManager = AppleLoginManager()
     
     func setUpView(){
         self.btnSignUp.layer.cornerRadius = 5
+        self.btnSignInWithApple.layer.cornerRadius = 5
         
         let tap = UITapGestureRecognizer()
         tap.addAction {
@@ -49,11 +51,17 @@ class SignUpVC: UIViewController {
     }
     
     @IBAction func btnSignUpClick(_ sender: UIButton) {
-        let err = self.validation()
-        if err == "" {
-            self.getExistingUser(email: self.txtEmail.text ?? "", password: self.txtPassword.text ?? "", confirmPassword: self.txtConfirmPassword.text ?? "")
-        }else{
-            Alert.shared.showAlert(message: err, completion: nil)
+        if sender == btnSignUp {      //
+            let err = self.validation()
+            if err == "" {
+                UIApplication.shared.setTab()
+            
+               self.getExistingUser(email: self.txtEmail.text ?? "", password: self.txtPassword.text ?? "", confirmPassword: self.txtConfirmPassword.text ?? "")
+            }else{
+                Alert.shared.showAlert(message: err, completion: nil)
+            }
+    }else if sender == btnSignInWithApple {
+            self.appleLoginManager.performAppleLogin()
         }
     }
     
@@ -115,32 +123,20 @@ extension SignUpVC {
         }
     }
     
-//    func sendMessage(msg:String, msgType:String,userName:String, data1: String)  {
-//
-//        var ref : DocumentReference? = nil
-//
-//        ref = AppDelegate.shared.db.collection(kChatTable).addDocument(data:
-//            [ kMessage: msg,
-//              kMsgype : msgType,
-//              kChatId : "\(userName)@\(data1)",
-//              kServerTime : FieldValue.serverTimestamp(),
-//              kSenderName: data1,
-//              kReceiverName: userName
-//            ])
-//        {  err in
-//            if let err = err {
-//                print("Error adding document: \(err)")
-//            } else {
-//                print("Document added with ID: \(ref!.documentID)")
-//                AppDelegate.shared.db.collection(kRecentChatTable).document("\(userName)@\(data1)").setData(
-//                    [ kMessage: msg,
-//                      kMsgype : msgType,
-//                      kChatId : "\(userName)@\(data1)",
-//                      kServerTime : FieldValue.serverTimestamp(),
-//                      kSenderName: data1,
-//                      kReceiverName: userName
-//                    ])
-//            }
-//        }
-//    }
+
+    
+    func appleLoginData(data: AppleLoginModel) {
+        
+        print("Social Id==>", data.socialId ?? "")
+        print("First Name==>", data.firstName ?? "")
+        print("Last Name==>", data.lastName ?? "")
+        print("Email==>", data.email ?? "")
+        print("Login type==>", data.loginType ?? "")
+        
+        
+        if let vc = UIStoryboard.main.instantiateViewController(withClass: SignUpVC.self) {
+            //            vc.isApple = true
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+    }
 }
